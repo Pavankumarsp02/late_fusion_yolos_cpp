@@ -1,0 +1,122 @@
+# Late Fusion Yolos CPP
+This repository contains a complete pipeline for multi-camera object detection and panoramic image stitching using YOLOv8 and ROS2. The project is divided into two main functional blocks: detection and fusion.
+ 
+## Project Architecture
+The system operates in a sequential pipeline:
+* Perception (ros2_yolos_cpp): Processes raw camera feeds to perform real-time YOLO object detection.
+* Stitching (late_fusion_for_yolos_cpp): Collects the processed frames from multiple cameras and fuses them into a single panoramic view.
+
+## Repository Structure
+**1\.** **ros2_yolos_cpp\.**  
+This package is responsible for the initial object detection phase.
+
+  * Functionality: Subscribes to raw camera topics and applies YOLOv8 inference.
+  * Multi-Camera Support: Designed to run concurrent instances for multiple camera feeds (e.g., a 3-camera setup).
+  * Output: Publishes processed images with bounding boxes and class labels.
+
+<table align="center" cellpadding="10">
+ <tr>
+    <b>Individual Detection sample from Rviz</b><br>
+    <td align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/camera3.gif" width="400">
+    </td>
+    <td align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/camera2.gif" width="400">
+    </td>
+  </tr>
+</table>
+
+**2\.** **late_fusion_for_yolos_cpp\.**   
+This package handles the "Late Fusion" or panoramic stitching of the detected outputs.
+
+* Functionality: Takes the YOLO-detected images from the three camera streams.
+* Output: A stitched, panoramic image that maintains detection information across the entire field of view.
+
+<b>Panoromic Stitched Image from Rviz</b><br>
+<img src="late_fusion_for_yolos_cpp/assets/Fused_Rviz_view.gif">
+
+## Getting Started
+* Prerequisites
+* ROS2 (Jazzy)
+* OpenCV 4.x
+* CUDA (Recommended for YOLO inference)
+* C++17 Compiler
+
+### Build from Source
+```bash
+# Create workspace
+mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
+
+# Clone package
+git clone https://github.com/Pavankumarsp02/late_fusion_yolos_cpp.git
+
+# Install dependencies
+cd ~/ros2_ws
+rosdep update && rosdep install --from-paths src --ignore-src -y
+
+#Additional files and packages
+#extracting export_onnx.py to get yolov8n.onnx file
+#generally this file throws error when tried to execute by command "python3 export_onnx.py"
+#simple solution is to create a venv and execute within venv
+sudo apt install -y python3-venv python3-pip
+python3 -m venv venv
+
+source venv/bin/activate #activating python-venv
+pip install ultralytics
+python3 export_onnx.py   #after sucessful run, file yolov8n.onnx is created
+
+#deactivating python-venv
+deactivate
+
+# Build (Release mode recommended for performance)
+colcon build
+source install/setup.bash
+```
+
+## 🛠️ Usage
+
+This package provides a launch file for each task. You **must** provide paths to your ONNX model and (optionally) labels file.
+
+### 1. Object Detection
+Publishes `vision_msgs/Detection2DArray` with bounding boxes and class IDs.    
+To run the entire setup with all 3 cameras, we require 6 terminals.
+
+Terminal 1: (Running Yolo node for camera 2)
+```bash
+ros2 launch ros2_yolos_cpp detector2.launch.py \
+  model_path:=src/ros2_yolos_cpp/yolov8n.onnx \
+  labels_path:=src/ros2_yolos_cpp/coco.names \
+  use_gpu:=true image_topic:=/lucid_vision/camera_2/image
+```
+Terminal 2: (Running Yolo node for camera 3)
+```bash
+ros2 launch ros2_yolos_cpp detector3.launch.py \
+  model_path:=src/ros2_yolos_cpp/yolov8n.onnx \
+  labels_path:=src/ros2_yolos_cpp/coco.names \
+  use_gpu:=true image_topic:=/lucid_vision/camera_3/image
+```
+Terminal 3: (Running Yolo node for camera 4)
+```bash
+ros2 launch ros2_yolos_cpp detector4.launch.py \
+  model_path:=src/ros2_yolos_cpp/yolov8n.onnx \
+  labels_path:=src/ros2_yolos_cpp/coco.names \
+  use_gpu:=true image_topic:=/lucid_vision/camera_4/image
+```
+Terminal 4: (Configuring and Activating yolo nodes)
+```bash
+ros2 lifecycle set /yolos_detector2 configure \
+ros2 lifecycle set /yolos_detector3 configure \
+ros2 lifecycle set /yolos_detector4 configure \
+ros2 lifecycle set /yolos_detector2 activate \
+ros2 lifecycle set /yolos_detector3 activate \
+ros2 lifecycle set /yolos_detector4 activate
+```
+Terminal 5: (Enabling Late Fusion Node)
+```bash
+ros2 launch late_fusion_for_yolos_cpp launch_fusion_node.py
+```
+Terminal 6: (To visualize output - Rviz2)  
+```bash
+rviz2
+```
+* Select topic which you want to view visually.
