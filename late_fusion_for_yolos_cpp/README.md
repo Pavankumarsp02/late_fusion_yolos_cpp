@@ -82,3 +82,6 @@ DETECTION FUSION LOGIC
     header.stamp = now()
 
 This is append-only aggregation, not geometric or semantic fusion.
+
+## Demo on Rviz
+<img src="assets/Fused_Rviz_view.gif">
