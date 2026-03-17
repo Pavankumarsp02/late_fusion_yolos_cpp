@@ -7,7 +7,7 @@ The system operates in a sequential pipeline:
 * Stitching (late_fusion_for_yolos_cpp): Collects the processed frames from multiple cameras and fuses them into a single panoramic view.
 
 ## Repository Structure
-**1\.** **ros2_yolos_cpp\.**  
+**1\.** **ros2_yolos_cpp**
 This package is responsible for the initial object detection phase.
 
   * Functionality: Subscribes to raw camera topics and applies YOLOv8 inference.
@@ -26,21 +26,21 @@ This package is responsible for the initial object detection phase.
   </tr>
 </table>
 
-**2\.** **late_fusion_for_yolos_cpp\.**   
+**2\.** **late_fusion_for_yolos_cpp**  
 This package handles the "Late Fusion" or panoramic stitching of the detected outputs.
 
 * Functionality: Takes the YOLO-detected images from the three camera streams.
 * Output: A stitched, panoramic image that maintains detection information across the entire field of view.
 
-<b>Panoromic Stitched Image from Rviz</b><br>
+<b>Panoramic Stitched Image from Rviz</b><br>
 <img src="late_fusion_for_yolos_cpp/assets/Fused_Rviz_view.gif">
 
-## Getting Started
-* Prerequisites
-* ROS2 (Jazzy)
-* OpenCV 4.x
-* CUDA (Recommended for YOLO inference)
-* C++17 Compiler
+## Getting Started  
+Prerequisites
+* **ROS2** : Jazzy
+* **OpenCV** : 4.5+
+* **CUDA** (Recommended for YOLO inference)
+* **C++ Compiler**
 
 ### Build from Source
 ```bash
@@ -53,11 +53,13 @@ git clone https://github.com/Pavankumarsp02/late_fusion_yolos_cpp.git
 # Install dependencies
 cd ~/ros2_ws
 rosdep update && rosdep install --from-paths src --ignore-src -y
+```
+## Additional files and packages
+* Executing **export_onnx.py** to get **yolov8n.onnx** and **yolov8n.pt**
+* Generally this file throws error when tried to execute by command "python3 export_onnx.py"
+* Simple solution is to create a venv and execute within venv
 
-#Additional files and packages
-#extracting export_onnx.py to get yolov8n.onnx file
-#generally this file throws error when tried to execute by command "python3 export_onnx.py"
-#simple solution is to create a venv and execute within venv
+```bash
 sudo apt install -y python3-venv python3-pip
 python3 -m venv venv
 
@@ -74,8 +76,6 @@ source install/setup.bash
 ```
 
 ## 🛠️ Usage
-
-This package provides a launch file for each task. You **must** provide paths to your ONNX model and (optionally) labels file.
 
 ### 1. Object Detection
 Publishes `vision_msgs/Detection2DArray` with bounding boxes and class IDs.    
@@ -120,3 +120,10 @@ Terminal 6: (To visualize output - Rviz2)
 rviz2
 ```
 * Select topic which you want to view visually.
+ <table align="center" cellpadding="10"> 
+  <tr>
+    <td colspan="2" align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/Rviz.gif" width="400">
+    </td>
+  </tr>
+ </table>
