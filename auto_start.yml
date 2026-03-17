@@ -8,16 +8,24 @@ windows:
       layout: tile
       panes:
         - pane1:
-          - docker start -ai <container_name>
-          - sleep 3 && ros2 launch ros2_yolos_cpp detector2.launch.py model_path:=src/ros2_yolos_cpp/yolov8n.onnx labels_path:=src/ros2_yolos_cpp/coco.names use_gpu:=true image_topic:=/luci>
+          - source /opt/ros/jazzy/setup.bash
+          - cd ros2_ws3
+          - source install/setup.bash
+          - sleep 3 && ros2 launch ros2_yolos_cpp detector2.launch.py model_path:=src/ros2_yolos_cpp/yolov8n.onnx labels_path:=src/ros2_yolos_cpp/coco.names use_gpu:=true image_topic:=/lucid_vision/camera_2/image
         - pane2:
-          - sleep 2 && docker exec -it <container_name> /bin/bash
-          - ros2 launch ros2_yolos_cpp detector3.launch.py model_path:=src/ros2_yolos_cpp/yolov8n.onnx labels_path:=src/ros2_yolos_cpp/coco.names use_gpu:=true image_topic:=/lucid_vision/ca>
+          - source /opt/ros/jazzy/setup.bash
+          - cd ros2_ws3
+          - source install/setup.bash
+          - ros2 launch ros2_yolos_cpp detector3.launch.py model_path:=src/ros2_yolos_cpp/yolov8n.onnx labels_path:=src/ros2_yolos_cpp/coco.names use_gpu:=true image_topic:=/lucid_vision/camera_3/image
         - pane3:
-          - sleep 2 && docker exec -it <container_name> /bin/bash
-          - ros2 launch ros2_yolos_cpp detector4.launch.py model_path:=src/ros2_yolos_cpp/yolov8n.onnx labels_path:=src/ros2_yolos_cpp/coco.names use_gpu:=true image_topic:=/lucid_vision/ca>
+          - source /opt/ros/jazzy/setup.bash
+          - cd ros2_ws3
+          - source install/setup.bash
+          - ros2 launch ros2_yolos_cpp detector4.launch.py model_path:=src/ros2_yolos_cpp/yolov8n.onnx labels_path:=src/ros2_yolos_cpp/coco.names use_gpu:=true image_topic:=/lucid_vision/camera_4/image
         - pane4:
-          - sleep 2 && docker exec -it <container_name> /bin/bash
+          - source /opt/ros/jazzy/setup.bash
+          - cd ros2_ws3
+          - source install/setup.bash
           - sleep 10
           - ros2 lifecycle set /yolos_detector3 configure
           - sleep 4 && ros2 lifecycle set /yolos_detector2 configure
@@ -26,5 +34,7 @@ windows:
           - sleep 4 && ros2 lifecycle set /yolos_detector2 activate
           - sleep 4 && ros2 lifecycle set /yolos_detector4 activate
         - pane5:
-          - docker exec -it <container_name> /bin/bash
+          - source /opt/ros/jazzy/setup.bash
+          - cd ros2_ws3
+          - source install/setup.bash
           - ros2 launch late_fusion_for_yolos_cpp launch_fusion_node.py
