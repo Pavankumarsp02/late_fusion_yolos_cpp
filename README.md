@@ -100,8 +100,9 @@ source install/setup.bash
 ### There are two ways to run the entire setup.
 
 ### 1. Manual executing
-Publishes `vision_msgs/Detection2DArray` with bounding boxes and class IDs.    
-To run the entire setup with all 3 cameras, we require 6 terminals.
+* Publishes `vision_msgs/Detection2DArray` with bounding boxes and class IDs.    
+* To run the entire setup with all 3 cameras, we require 6 terminals.    
+* The default commands runs on GPU, If your machine lacks one, neglect the `use_gpu:=true` from the execution command.
 
 Terminal 1: (Running Yolo node for camera 2)
 ```bash
