@@ -162,7 +162,49 @@ rviz2
   tmuxinator start
   ```
   Visualize using Rviz as shown in previous step
-  
+
+## Hardware Usage Data    
+### GPU Mode (i.e `use_gpu:=true`)
+* CPU
+
+ <table align="center" cellpadding="10"> 
+  <tr>
+    <td colspan="2" align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/CPU_Usage_at_GPU_Enabled.gif">
+    </td>
+  </tr>
+ </table>
+ 
+ * GPU
+   
+  <table align="center" cellpadding="10"> 
+  <tr>
+    <td colspan="2" align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/GPU_Enabled_Performance.gif">
+    </td>
+  </tr>
+ </table>
+
+### CPU Mode (neglected use_gpu:=true)
+* CPU
+ <table align="center" cellpadding="10"> 
+  <tr>
+    <td colspan="2" align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/CPU_Usage_at_GPU_Disabled.gif">
+    </td>
+  </tr>
+ </table>
+ 
+ * GPU
+   
+  <table align="center" cellpadding="10"> 
+  <tr>
+    <td colspan="2" align="center" style="border:1px solid #ccc">
+      <img src="late_fusion_for_yolos_cpp/assets/GPU_Disabled_Performance.gif">
+    </td>
+  </tr>
+ </table>
+
 ## 🐳 Docker
 
 Run the stack without installing dependencies locally.
